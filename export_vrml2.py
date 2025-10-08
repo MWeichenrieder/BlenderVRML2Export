@@ -55,6 +55,19 @@ def save_bmesh(fw, bm,
         fw('\t\t}\n')  # end 'ImageTexture'
     else:
         fw('\t\tmaterial Material {\n')
+        if use_color and color_type == 'MATERIAL':
+            for c in material_colors:
+                vals = [float(v) for v in c.split()]
+                if len(vals) == 4:
+                    r, g, b, a = vals
+                else:
+                    r, g, b = vals
+                    a = 1.0
+                fw(f'\t\t\tdiffuseColor {r:.3f} {g:.3f} {b:.3f}\n')
+                fw(f'\t\t\ttransparency {1.0 - a:.3f}\n')
+        else:
+            fw('\t\t\tdiffuseColor 1.0 1.0 1.0\n')
+            fw('\t\t\ttransparency 0.0\n')
         fw('\t\t}\n')  # end 'Material'
     fw('\t}\n')  # end 'Appearance'
 
@@ -198,10 +211,16 @@ def save_object(fw, global_matrix,
             if not me.materials:
                 use_color = False
             else:
-                material_colors = [
-                        # "%.2f %.2f %.2f " % (m.diffuse_color[:] if m else (1.0, 1.0, 1.0))
-                        "{0} {1} {2} ".format(*(m.diffuse_color[:] if m else (1.0, 1.0, 1.0)))
-                        for m in me.materials]
+                for m in me.materials:
+                    if m:
+                        r, g, b, a = m.diffuse_color
+                        material_colors.append(f"{r} {g} {b} {a} ")
+                    else:
+                        material_colors.append("1.0 1.0 1.0 1.0 ")
+                    # material_colors = [
+                    #     # "%.2f %.2f %.2f " % (m.diffuse_color[:] if m else (1.0, 1.0, 1.0))
+                    #     "{0} {1} {2} ".format(*(m.diffuse_color[:] if m else (1.0, 1.0, 1.0)))
+                    #     for m in me.materials]
         assert(color_type in {'VERTEX', 'MATERIAL'})
 
     if use_uv:
