@@ -82,52 +82,52 @@ def save_bmesh(fw, bm,
     fw(']\n')  # end 'point[]'
     fw('\t\t}\n')  # end 'Coordinate'
 
-    if use_color:
-        if color_type == 'MATERIAL':
-            fw('\t\tcolorPerVertex FALSE\n')
-            fw('\t\tcolor Color {\n')
-            fw('\t\t\tcolor [ ')
-            c = None
-            for c in material_colors:
-                fw(c)
-            del c
-            fw(']\n')  # end 'color[]'
-            fw('\t\t}\n')  # end 'Color'
-        elif color_type == 'VERTEX':
-            fw('\t\tcolorPerVertex TRUE\n')
-            fw('\t\tcolor Color {\n')
-            fw('\t\t\tcolor [ ')
-            v = None
-            c_none = "0.00 0.00 0.00 "
-            color_layer = bm.loops.layers.color.active
-            assert(color_layer is not None)
-            for v in bm.verts:
-                # weak, use first loops color
-                try:
-                    l = v.link_loops[0]
-                except:
-                    l = None
-                # fw(c_none if l is None else ("%.2f %.2f %.2f " % l[color_layer][:]))
-                fw(c_none if l is None else ("{0} {1} {2} ".format(*l[color_layer][:])))
+    # if use_color:
+    #     if color_type == 'MATERIAL':
+    #         fw('\t\tcolorPerVertex FALSE\n')
+    #         fw('\t\tcolor Color {\n')
+    #         fw('\t\t\tcolor [ ')
+    #         c = None
+    #         for c in material_colors:
+    #             fw(c)
+    #         del c
+    #         fw(']\n')  # end 'color[]'
+    #         fw('\t\t}\n')  # end 'Color'
+    #     elif color_type == 'VERTEX':
+    #         fw('\t\tcolorPerVertex TRUE\n')
+    #         fw('\t\tcolor Color {\n')
+    #         fw('\t\t\tcolor [ ')
+    #         v = None
+    #         c_none = "0.00 0.00 0.00 "
+    #         color_layer = bm.loops.layers.color.active
+    #         assert(color_layer is not None)
+    #         for v in bm.verts:
+    #             # weak, use first loops color
+    #             try:
+    #                 l = v.link_loops[0]
+    #             except:
+    #                 l = None
+    #             # fw(c_none if l is None else ("%.2f %.2f %.2f " % l[color_layer][:]))
+    #             fw(c_none if l is None else ("{0} {1} {2} ".format(*l[color_layer][:])))
 
-            del v
-            fw(']\n')  # end 'color[]'
-            fw('\t\t}\n')  # end 'Color'
+    #         del v
+    #         fw(']\n')  # end 'color[]'
+    #         fw('\t\t}\n')  # end 'Color'
 
-        # ---
+    #     # ---
 
-        if color_type == 'MATERIAL':
-            fw('\t\tcolorIndex [ ')
-            i = None
-            for f in bm.faces:
-                i = f.material_index
-                if i >= len(material_colors):
-                    i = 0
-                fw("{0} ".format(i))
-            del i
-            fw(']\n')  # end 'colorIndex[]'
-        elif color_type == 'VERTEX':
-            pass
+    #     if color_type == 'MATERIAL':
+    #         fw('\t\tcolorIndex [ ')
+    #         i = None
+    #         for f in bm.faces:
+    #             i = f.material_index
+    #             if i >= len(material_colors):
+    #                 i = 0
+    #             fw("{0} ".format(i))
+    #         del i
+    #         fw(']\n')  # end 'colorIndex[]'
+    #     elif color_type == 'VERTEX':
+    #         pass
 
     if use_uv:
         fw('\t\ttexCoord TextureCoordinate {\n')
